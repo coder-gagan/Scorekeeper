@@ -1,0 +1,73 @@
+plugins {
+   id 'java'
+   id 'org.springframework.boot' version '3.0.2'
+   id 'io.spring.dependency-management' version '1.1.0'
+   id 'com.diffplug.spotless' version '5.16.0'
+}
+
+group = 'com.cqrs'
+version = '0.0.1-SNAPSHOT'
+
+java {
+   sourceCompatibility = '17'
+}
+
+spotless {
+
+   format 'misc', {
+      // define the files to apply `misc` to
+      target '*.gradle', '*.md', '.gitignore'
+
+      // define the steps to apply to those files
+      trimTrailingWhitespace()
+      indentWithSpaces(3) // or spaces. Takes an integer argument if you don't like 4
+      endWithNewline()
+      setEncoding('utf-8')
+   }
+   java {
+      eclipse() // I like eclipse formatting over google
+//      googleJavaFormat('1.11.0').aosp().reflowLongStrings(), this is the other option
+   }
+}
+
+repositories {
+   mavenCentral()
+}
+
+dependencyManagement {
+   imports {
+      mavenBom "org.springframework.cloud:spring-cloud-dependencies:2022.0.3"
+   }
+}
+
+dependencies {
+   implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+   implementation 'org.springframework.boot:spring-boot-starter-actuator'
+   //implementation 'org.springframework.cloud:spring-cloud-starter-config'
+   implementation 'org.springframework.boot:spring-boot-starter-web'
+   implementation 'org.springframework.kafka:spring-kafka'
+   compileOnly 'org.projectlombok:lombok:1.18.32'
+   annotationProcessor 'org.projectlombok:lombok:1.18.32'
+   testCompileOnly 'org.projectlombok:lombok:1.18.32'
+   testAnnotationProcessor 'org.projectlombok:lombok:1.18.32'
+   testImplementation('org.springframework.boot:spring-boot-starter-test') {
+      exclude group: 'org.mockito', module: 'mockito-core'
+   }
+   testCompileOnly 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+   testImplementation 'org.mockito:mockito-inline:4.8.1'
+   testImplementation 'org.springframework.kafka:spring-kafka-test'
+}
+
+tasks.named('test') {
+   useJUnitPlatform()
+}
+
+tasks.register('formatCode', Exec) {
+   description = 'Formats Java code using Spotless'
+   group = 'formatting'
+   commandLine './gradlew', 'spotlessApply'
+}
+
+tasks.named('spotlessJavaCheck') {
+   dependsOn 'formatCode'
+}
