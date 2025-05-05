@@ -27,6 +27,10 @@ Build the project using Gradle:
 
 Start Docker locally before proceeding to next step.
 
+Make the script files executable (first-time effort):
+> chmod +x start_services.sh
+> chmod +x stop_services.sh
+
 Start up all integrations by running the script file:
 > ./start_services.sh
 
