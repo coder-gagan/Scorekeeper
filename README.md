@@ -25,7 +25,9 @@ This app integrates with the following services:
 Build the project using Gradle:
 > gradle build
 
-Ensure all integrations are running by executing the below sh file from parent project:
+Start Docker locally before proceeding to next step.
+
+Start up all integrations by running the script file:
 > ./start_services.sh
 
 Run the Spring boot application!
